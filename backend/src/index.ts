@@ -16,9 +16,8 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(morgon("dev"));
 
-
 const startServer = async () => {
-
+  await connectDB();
   app.listen(env.PORT, () => {
     console.log("Server started at " + env.PORT);
   });
