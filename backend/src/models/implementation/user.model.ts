@@ -13,7 +13,7 @@ const userSchema = new Schema<IUserModel>({
   },
   email: {
     type: String,
-    required: true, // Use 'required' instead of 'require'
+    required: true,
     unique: true,
   },
   password: {
