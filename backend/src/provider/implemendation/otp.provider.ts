@@ -13,7 +13,7 @@ export default class Otp implements IotpProvider {
         return Math.floor(100000 + Math.random() * 900000); 
     }
 
-    getOtp(): number {
+    get getOtp(): number {
         return this.otp;
     }
 

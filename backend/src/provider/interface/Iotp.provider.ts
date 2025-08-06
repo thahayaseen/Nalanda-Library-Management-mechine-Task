@@ -1,5 +1,5 @@
 export interface IotpProvider {
   
-  getOtp(): number;
+  get getOtp(): number;
   getExpiry(): Date;
 }

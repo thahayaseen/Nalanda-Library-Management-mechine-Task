@@ -36,4 +36,18 @@ export class Authcontroller {
       next(error);
     }
   }
+  async varifyotp(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { otp, userId } = req.body;
+      console.log(userId,'iidss');
+      
+      await this.authServices.otpVarify(otp, userId);
+      res.status(HttpStatus.CREATED).json({
+        success: true,
+        message:'user varified success'
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

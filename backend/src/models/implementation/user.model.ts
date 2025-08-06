@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema ,Types} from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 import { IUser } from "shared/types";
 
 export interface IUserModel extends Document, Omit<IUser, "_id"> {}
 
 const userSchema = new Schema<IUserModel>({
-  _id:Types.ObjectId,
+  _id: Types.ObjectId,
   username: { type: String, required: true },
   role: {
     type: String,
@@ -18,6 +18,10 @@ const userSchema = new Schema<IUserModel>({
   },
   password: {
     type: String,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
   },
 });
 

@@ -24,5 +24,20 @@ export const env = {
   },
   get REDISURL():string{
     return requireEnv('REDIS_URL')
+  },
+  get NodeMailEmail():string{
+    return requireEnv('NodeMailEmail')
   }
+  ,
+  get MAILPASS():string{
+    return requireEnv('MAILPASS')
+  }
+  ,
+  get otpTimelimit():number{
+    return Number(requireEnv('OTPTIME'))
+  },
+  get userTime():number{
+    return Number(requireEnv('USERTIMELIMIT'))
+  }
+
 };

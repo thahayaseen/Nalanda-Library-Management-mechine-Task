@@ -5,13 +5,20 @@ import { comparePassword, hashPassword } from "@/utils/bcrypt.utill";
 import { createHttpError } from "@/utils/httpError.utill";
 import { HttpResponse, HttpStatus } from "@/constants";
 import { generateAccessToken, generateRefreshToken } from "@/utils/jwt.util";
+import Otp from "@/provider/implemendation/otp.provider";
+import { IredisService } from "../interface/Iredis.services";
+import { v4 as uuid } from "uuid";
+import { Inodemailservices } from "../interface/Inodemail.services";
 export interface sighUserreturn {
   accessToken: string;
   refreshToken: string;
 }
-export class AuthServices implements IAuthServices {
+export class authServices implements IAuthServices {
   private userRepository;
-  constructor() {
+  constructor(
+    private redisService: IredisService,
+    private nodemailService: Inodemailservices
+  ) {
     this.userRepository = new userRepository();
   }
   async createUser(data: IUser): Promise<string> {
@@ -21,9 +28,14 @@ export class AuthServices implements IAuthServices {
     if (userAldredy) {
       throw createHttpError(HttpStatus.CONFLICT, HttpResponse.USER_EXIST);
     }
+    data.isVerified = false;
+
     data.password = await hashPassword(data.password);
-    const result = await this.userRepository.create(data);
-    return result.email;
+    data._id = uuid();
+    await this.redisService.saveUserdata(data);
+    await this.Otpsend(data._id, data);
+    // const result = await this.userRepository.create(data);
+    return data._id;
   }
   async sigInUser(email: string, password: string): Promise<sighUserreturn> {
     const data = await this.userRepository.findByUsernameOrEmail(email);
@@ -48,5 +60,31 @@ export class AuthServices implements IAuthServices {
     });
     return { accessToken, refreshToken };
   }
-  
+  async Otpsend(userid: string, data: IUser): Promise<string> {
+    const otp = new Otp().getOtp;
+    console.log(otp);
+    const dataa = await this.redisService.saveOtp(userid, otp);
+    await this.nodemailService.sendOtp(String(otp), data.email, data.username);
+    console.log(data);
+
+    return "";
+  }
+  async otpVarify(userotp: string, userid: string): Promise<void> {
+    console.log(userid, "usdf");
+
+    const otp = await this.redisService.getOtp(userid);
+    if (!otp) {
+      throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.OTP_NOT_FOUND);
+    }
+    if (userotp != otp) {
+      throw createHttpError(HttpStatus.CONFLICT, HttpResponse.OTP_INCORRECT);
+    }
+    const userdata = await this.redisService.getUserData(userid);
+    if (userdata && userdata._id) {
+      delete userdata._id;
+    }
+    userdata.isVerified = true;
+    await this.userRepository.create(userdata);
+    return;
+  }
 }
