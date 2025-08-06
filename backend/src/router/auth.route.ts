@@ -9,7 +9,7 @@ const router = Router();
 const authServices = new AuthServices();
 const authcontrller = new Authcontroller(authServices);
 router.post(
-  "/",
+  "/signup",
   validate(signUpSchema),
   authcontrller.signUp.bind(authcontrller)
 );

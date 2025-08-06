@@ -1,21 +1,28 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export const env = {
-  get PORT() {
-    return process.env.PORT || 4000;
-  },
-  get MONGO_URL() {
-    return process.env.MONGO_URL;
-  },
-  get JWT_ACCESS_SECRET(){
-    console.log(process.env.JWT_REFRESH_SECRET);
+function requireEnv(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`${key} is required in .env`);
+  }
+  return value;
+}
 
-    return process.env.JWT_ACCESS_SECRET
+export const env = {
+  get PORT(): number {
+    return Number(process.env.PORT) || 4000; 
   },
-  get JWT_REFRESH_SECRET(){
-    console.log(process.env.JWT_REFRESH_SECRET);
-    
-    return process.env.JWT_REFRESH_SECRET
+  get MONGO_URL(): string {
+    return requireEnv("MONGO_URL");
+  },
+  get JWT_ACCESS_SECRET(): string {
+    return requireEnv("JWT_ACCESS_SECRET");
+  },
+  get JWT_REFRESH_SECRET(): string {
+    return requireEnv("JWT_REFRESH_SECRET");
+  },
+  get REDISURL():string{
+    return requireEnv('REDIS_URL')
   }
 };
