@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
 import { IBook } from "shared/types/Book.interface";
 
-class bookController {
+export class bookController {
   constructor(
     private bookService: IbookService,
     private borrowService: IBorrowServices
@@ -14,6 +14,8 @@ class bookController {
   async createBook(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
+      data.image = req.file?.path.replace(/^public[\\/]/, "");
+
       const book = await this.bookService.createBook(data);
       res
         .status(HttpStatus.CREATED)
@@ -26,8 +28,9 @@ class bookController {
   async updateBook(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body as IBook;
+      const ISBN = req.params.ISBN;
 
-      const updaed = await this.bookService.updateBook(data.ISBN, data);
+      await this.bookService.updateBook(ISBN, data);
       res.status(HttpStatus.OK).json({
         success: true,
         message: HttpResponse.BOOK_UPDATED,
@@ -56,10 +59,28 @@ class bookController {
     }
   }
   async getSelected(req: Request, res: Response, next: NextFunction) {
-    const ISBN = req.params.id;
-    const data = await this.bookService.getSelectedBook(ISBN);
-    res.status(HttpStatus.OK).json({ success: true, data });
+    try {
+      const ISBN = req.params.ISBN;
+      const data = await this.bookService.getSelectedBook(ISBN,(req as UserRequest).user.id);
+
+      res.status(HttpStatus.OK).json({ success: true, data });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  }
+  async Mostactiveusers(req: Request, res: Response, next: NextFunction) {
+    const data = await this.borrowService.Mostactiveusers();
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "successfully fetch the data", data });
     return;
   }
-  
+  async monstBorrowdBook(req: Request, res: Response, next: NextFunction) {
+    const data = await this.borrowService.monstBorrowdBook();
+    res
+      .status(HttpStatus.OK)
+      .json({ success: true, message: "successfully fetch the data", data });
+    return;
+  }
 }

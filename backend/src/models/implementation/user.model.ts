@@ -4,7 +4,7 @@ import { IUser } from "shared/types";
 export interface IUserDocument extends Document, Omit<IUser, "_id"> {}
 
 const userSchema = new Schema<IUserDocument>({
-  _id: Types.ObjectId,
+
   username: { type: String, required: true },
   role: {
     type: String,

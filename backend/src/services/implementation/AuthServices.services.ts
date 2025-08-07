@@ -12,6 +12,12 @@ import { Inodemailservices } from "../interface/Inodemail.service";
 export interface sighUserreturn {
   accessToken: string;
   refreshToken: string;
+  user: {
+    _id: string;
+    username: string;
+    email: string;
+    createdAt: string;
+  };
 }
 export class authServices implements IAuthServices {
   private userRepository;
@@ -28,14 +34,16 @@ export class authServices implements IAuthServices {
     if (userAldredy) {
       throw createHttpError(HttpStatus.CONFLICT, HttpResponse.USER_EXIST);
     }
-    data.isVerified = false;
+    data.isVerified = true;
 
     data.password = await hashPassword(data.password);
-    data._id = uuid();
-    await this.redisService.saveUserdata(data);
-    await this.Otpsend(data._id, data);
-    // const result = await this.userRepository.create(data);
-    return data._id;
+    await this.userRepository.create(data);
+    // // data._id = uuid();
+    // // await this.redisService.saveUserdata(data);
+    // // await this.Otpsend(data._id, data);
+    // console.log(data,'datais');
+
+    return data.email;
   }
   async sigInUser(email: string, password: string): Promise<sighUserreturn> {
     const data = await this.userRepository.findByUsernameOrEmail(email);
@@ -53,12 +61,20 @@ export class authServices implements IAuthServices {
     const accessToken = generateAccessToken({
       email: data.email,
       id: data._id,
+      role:data.role
     });
     const refreshToken = generateRefreshToken({
       email: data.email,
       id: data._id,
     });
-    return { accessToken, refreshToken };
+    const user={
+      _id:String(data._id),
+      username:data.username,
+      email:data.email,
+      role:data.role,
+      createdAt:String(data.createdAt)
+    }
+    return { accessToken, refreshToken, user};
   }
   async Otpsend(userid: string, data: IUser): Promise<string> {
     const otp = new Otp().getOtp;

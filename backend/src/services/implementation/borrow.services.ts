@@ -18,6 +18,8 @@ export class borrowServices implements IBorrowServices {
     private bookRepository: IbookRepository
   ) {}
   async borrowAbook(userid: Types.ObjectId, ISBN: string) {
+    console.log(userid, ISBN, "hefasdrer");
+
     const book = await this.bookRepository.findOne({ ISBN: ISBN });
     if (!book) {
       throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.BOOK_NOT_FOUND);
@@ -28,33 +30,43 @@ export class borrowServices implements IBorrowServices {
         HttpResponse.BOOK_COPY_OUTOFSTOCK
       );
     }
+
     await this.borrowRepository.create({
       user: userid,
       book: book._id as Types.ObjectId,
     });
+    book.copies = book.copies - 1;
+    await book.save();
     return;
   }
 
   async returnBook(borrowid: Types.ObjectId, userid: Types.ObjectId) {
-    const book = await this.borrowRepository.findOne({
+    const borrow = await this.borrowRepository.findOne({
       _id: borrowid,
       user: userid,
     });
-    if (!book) {
+
+    if (!borrow) {
       throw createHttpError(
         HttpStatus.NOT_FOUND,
         HttpResponse.BORROW_NOT_FOUND
       );
     }
-    if (book.status == "returned") {
+    const book = await this.bookRepository.findById(borrow.book);
+
+    if (borrow.status == "returned") {
       throw createHttpError(
         HttpStatus.CONFLICT,
         HttpResponse.BOOK_ALDREDY_RETURNED
       );
     }
-    book.returnedAt = new Date(Date.now());
-    book.status = "returned";
-    await book.save();
+    if (book) {
+      book.copies = book.copies + 1;
+      await book.save();
+    }
+    borrow.returnedAt = new Date(Date.now());
+    borrow.status = "returned";
+    await borrow.save();
     return;
   }
   async getMyBorrowedBooks(
@@ -62,6 +74,8 @@ export class borrowServices implements IBorrowServices {
     page: number = 1,
     limit: number = 10
   ): Promise<{ data: borrowDto[]; total: number }> {
+    console.log(userId,'id');
+    
     const borrowedRecords =
       await this.borrowRepository.find<IBorrowRecordPopulated>(
         { user: userId },
@@ -69,12 +83,14 @@ export class borrowServices implements IBorrowServices {
         limit,
         ["user", "book"]
       );
-
+    if (borrowedRecords.data.length == 0) {
+      throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.BOOK_NOT_FOUND);
+    }
     const results = borrowedRecords.data.map(
       (record) => new borrowDto(record as IBorrowRecordPopulated)
     );
 
-    return { data: results, total: borrowedRecords.total };
+    return { data: results, total: borrowedRecords.pages };
   }
   async Mostactiveusers(): Promise<ImostActiveUser[]> {
     return await this.borrowRepository.mostActiveuser();

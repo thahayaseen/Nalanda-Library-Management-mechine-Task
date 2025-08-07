@@ -31,6 +31,7 @@ export class Authcontroller {
         success: true,
         message: HttpResponse.USER_CREATION_SUCCESS,
         accessToken: data.accessToken,
+        user:data.user
       });
     } catch (error) {
       next(error);

@@ -4,7 +4,8 @@ export interface IUser {
   role: "admin" | "member";
   email: string;
   password: string;
-  isVerified:boolean
+  isVerified:boolean,
+  createdAt?:Date
 }
 export interface ImostActiveUser{
   name:string;

@@ -5,7 +5,7 @@ import { HttpStatus } from "@/constants/status.constant";
 import { createHttpError } from "@/utils/httpError.utill";
 import { UserRequest } from "@/utils/httpInterface.utill";
 
-export default function (userLevel: "member" | "admin") {
+export default function (userLevel?: "member" | "admin") {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const authHeader = req.headers.authorization;
@@ -26,7 +26,9 @@ export default function (userLevel: "member" | "admin") {
         email: string;
         role: "member" | "admin";
       };
-      payload.role = "member";
+      console.log(payload);
+      
+
       if (!payload) {
         console.log("Invalid token payload");
         throw createHttpError(
@@ -35,7 +37,10 @@ export default function (userLevel: "member" | "admin") {
         );
       }
 
-      if (payload.role !== userLevel) {
+      // If userLevel is provided, enforce role check
+      if (userLevel && payload.role !== userLevel) {
+        console.log('herer',userLevel);
+        
         throw createHttpError(
           HttpStatus.UNAUTHORIZED,
           HttpResponse.UNAUTHORIZED
@@ -48,8 +53,6 @@ export default function (userLevel: "member" | "admin") {
         role: payload.role,
       };
 
-      // console.log("User payload:", req.user);
-
       req.headers["x-user-payload"] = JSON.stringify(payload);
       next();
     } catch (error) {
@@ -57,3 +60,4 @@ export default function (userLevel: "member" | "admin") {
     }
   };
 }
+

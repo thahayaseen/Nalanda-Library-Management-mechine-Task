@@ -7,6 +7,7 @@ export class bookDto {
   private publicationDate: Date;
   private genre: string;
   private copies: number;
+  private image: string;
   constructor(book: IBook) {
     this.title = book.title;
     this.author = book.author;
@@ -14,5 +15,6 @@ export class bookDto {
     this.publicationDate = book.publicationDate;
     this.genre = book.genre;
     this.copies = book.copies;
+    this.image=book.image
   }
 }

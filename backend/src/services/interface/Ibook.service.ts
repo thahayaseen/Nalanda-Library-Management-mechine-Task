@@ -14,5 +14,14 @@ export interface IbookService {
     sortOrder: string,
     filters: Partial<{ genre: string; author: string }>
   ): Promise<{ data: bookDto[]; totalpage: number }>;
-  getSelectedBook(ISBN: string): Promise<bookDto>;
+  getSelectedBook(
+    ISBN: string,
+    userid: string
+  ): Promise<{
+    data: bookDto;
+    aldredy: {
+      ispurchased: boolean;
+      id: string;
+    };
+  }>;
 }

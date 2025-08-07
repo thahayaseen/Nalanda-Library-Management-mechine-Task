@@ -1,10 +1,12 @@
 import { IuserServices } from "@/services/interface/Iuser.service";
-import { UserServices } from "./../di/service.di";
+
 import { NextFunction, Request, Response } from "express";
 import { UserRequest } from "@/utils/httpInterface.utill";
 import { Types } from "mongoose";
-import { HttpStatus } from "@/constants";
+import { HttpResponse, HttpStatus } from "@/constants";
 import { IBorrowServices } from "@/services/interface/borrow.service";
+import { createHttpError } from "@/utils/httpError.utill";
+import { BorrowService } from "@/di/service.di";
 export class userController {
   constructor(
     private UserServices: IuserServices,
@@ -28,8 +30,12 @@ export class userController {
   }
   async buyAbook(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("herere");
+
       const userid = (req as UserRequest).user.id;
-      const ISBN = req.body;
+      const ISBN = req.params.id;
+      console.log(userid, "ajfsdf");
+
       await this.borrowService.borrowAbook(new Types.ObjectId(userid), ISBN);
       res
         .status(HttpStatus.CREATED)
@@ -39,9 +45,38 @@ export class userController {
   }
   async returnBook(req: Request, res: Response, next: NextFunction) {
     try {
-      const { borrowid } = req.body;
+      const { bookId } = req.body;
+      if (!bookId) {
+        throw createHttpError(
+          HttpStatus.FORBIDDEN,
+          HttpResponse.INVALID_CREDENTIALS
+        );
+      }
       const userid = (req as UserRequest).user.id;
-      await this.borrowService.returnBook(borrowid, new Types.ObjectId(userid));
+      await this.borrowService.returnBook(bookId, new Types.ObjectId(userid));
+      res
+        .status(HttpStatus.OK)
+        .json({ success: true, message: "succesfully returned" });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async BorrowdRecords(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { page, limit } = req.query;
+      console.log(page,'pages');
+      
+      const record = await this.borrowService.getMyBorrowedBooks(
+        (req as UserRequest).user.id,
+        Number(page),
+        Number(limit||5)
+      );
+      res.status(HttpStatus.OK).json({
+        success: true,
+        message: "succesfully fetch data",
+        data: record.data,
+        totalPages: record.total,
+      });
     } catch (error) {
       next(error);
     }

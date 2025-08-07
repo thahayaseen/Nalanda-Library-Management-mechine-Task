@@ -10,6 +10,7 @@ const bookSchema = new Schema<IbookDocument>({
   copies: { type: Number, default: 1 },
   listed: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
+  image:{type:String}
 });
 
 export const BookModel = model("Book", bookSchema);

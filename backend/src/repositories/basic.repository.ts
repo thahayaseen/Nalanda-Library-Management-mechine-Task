@@ -67,7 +67,9 @@ export abstract class BaseRepository<T extends Document> {
     const query = this.model.find(filter);
 
     const skip = (page - 1) * limit;
-    query.skip(skip).limit(limit);
+    console.log(skip,'slpts',page,limit);
+    
+    query.skip(skip).limit(limit,);
 
     if (populate?.length) {
       for (const path of populate) {

@@ -4,7 +4,7 @@ import {
   nodemaileService,
 } from "@/services/implementation";
 import { NodemailerProvider, RedisProvider } from "./provider.di";
-import { userServices, borrowServices } from "@/services/implementation";
+import { userServices, borrowServices,bookServices } from "@/services/implementation";
 import {
   BookRepository,
   BorrowRepository,
@@ -15,6 +15,8 @@ export const BorrowService = new borrowServices(
   BorrowRepository,
   BookRepository
 );
+export const BookServices = new bookServices(BookRepository,BorrowRepository)
+
 export const RedisService = new redisService(RedisProvider);
 export const Nodemailservice = new nodemaileService(NodemailerProvider);
 export const Authservices = new authServices(RedisService, Nodemailservice);
