@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import AuthRouter from "@/router/auth.route";
 import Bookrouter from "@/router/book.route";
-import member from "@/router/member.route";
+import member from "@/router/user.route";
 
 
 router.use("/", member);
