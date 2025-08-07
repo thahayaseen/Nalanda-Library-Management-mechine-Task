@@ -1,5 +1,5 @@
 import { userProfileDto } from "@/dto/userprofile.dto";
-import { IuserServices } from "../interface/Iuser.services";
+import { IuserServices } from "../interface/Iuser.service";
 import { IUserRepository } from "@/repositories/interface/Iuser.repository";
 import { Types } from "mongoose";
 import { createHttpError } from "@/utils/httpError.utill";

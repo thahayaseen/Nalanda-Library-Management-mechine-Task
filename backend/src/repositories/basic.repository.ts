@@ -56,8 +56,14 @@ export abstract class BaseRepository<T extends Document> {
     filter: FilterQuery<T>,
     page: number = 1,
     limit: number = 5,
-    populate?: string[]
-  ): Promise<TPopulated[] | T[]> {
+    populate?: string[],
+    sort: boolean = true
+  ): Promise<{
+    data: T[] | TPopulated[];
+    total: number;
+    page: number;
+    pages: number;
+  }> {
     const query = this.model.find(filter);
 
     const skip = (page - 1) * limit;
@@ -68,8 +74,12 @@ export abstract class BaseRepository<T extends Document> {
         query.populate(path);
       }
     }
+    query.sort({ createdAt: sort ? -1 : 1 });
+    const total = await this.model.countDocuments(filter);
+    const pages = Math.ceil(total / limit);
 
-    return query.exec();
+    const data = await query.exec();
+    return { data, total, page, pages };
   }
 
   async findOne(filter: FilterQuery<T>): Promise<T | null> {

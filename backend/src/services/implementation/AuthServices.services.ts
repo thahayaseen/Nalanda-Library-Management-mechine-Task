@@ -1,14 +1,14 @@
 import { IUser } from "shared/types";
-import { IAuthServices } from "../interface/Iauth.services";
+import { IAuthServices } from "../interface/Iauth.service";
 import { userRepository } from "@/repositories/implementation/user.repository";
 import { comparePassword, hashPassword } from "@/utils/bcrypt.utill";
 import { createHttpError } from "@/utils/httpError.utill";
 import { HttpResponse, HttpStatus } from "@/constants";
 import { generateAccessToken, generateRefreshToken } from "@/utils/jwt.util";
 import Otp from "@/provider/implemendation/otp.provider";
-import { IredisService } from "../interface/Iredis.services";
+import { IredisService } from "../interface/Iredis.service";
 import { v4 as uuid } from "uuid";
-import { Inodemailservices } from "../interface/Inodemail.services";
+import { Inodemailservices } from "../interface/Inodemail.service";
 export interface sighUserreturn {
   accessToken: string;
   refreshToken: string;

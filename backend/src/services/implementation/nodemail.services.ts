@@ -1,4 +1,4 @@
-import { Inodemailservices } from "../interface/Inodemail.services";
+import { Inodemailservices } from "../interface/Inodemail.service";
 
 export class nodemaileService implements Inodemailservices{
   constructor(private nodeMailerProvider: InodemaileProvider) {}

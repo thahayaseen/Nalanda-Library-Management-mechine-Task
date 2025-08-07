@@ -1,5 +1,5 @@
 import { env } from "@/config";
-import { IredisService } from "../interface/Iredis.services";
+import { IredisService } from "../interface/Iredis.service";
 import { IUser } from "shared/types";
 import { HttpResponse } from "@/constants";
 

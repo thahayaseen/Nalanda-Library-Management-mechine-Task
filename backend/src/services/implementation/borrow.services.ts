@@ -1,4 +1,3 @@
-
 import { HttpResponse, HttpStatus } from "@/constants";
 import { borrowDto } from "@/dto/borrow.dto";
 import { IBorrowdDocument } from "@/models/implementation/borrowd.model";
@@ -11,18 +10,28 @@ import {
   ImostBorrowedBookd,
 } from "shared/types/Borrowrecord.interface";
 import { ImostActiveUser } from "shared/types/user.interface";
+import { IBorrowServices } from "../interface/borrow.service";
 
-class borrowServices {
-  constructor(private borrowRepository: IborrowRepository,private bookRepository:IbookRepository) {}
+class borrowServices implements IBorrowServices {
+  constructor(
+    private borrowRepository: IborrowRepository,
+    private bookRepository: IbookRepository
+  ) {}
   async borrowAbook(userid: Types.ObjectId, ISBN: string) {
-    const book=await this.bookRepository.findOne({ISBN:ISBN})
-    if(!book){
-        throw createHttpError(HttpStatus.NOT_FOUND,HttpResponse.BOOK_NOT_FOUND)
+    const book = await this.bookRepository.findOne({ ISBN: ISBN });
+    if (!book) {
+      throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.BOOK_NOT_FOUND);
     }
-    if(book.copies<=0){
-        throw createHttpError(HttpStatus.FORBIDDEN,HttpResponse.BOOK_COPY_OUTOFSTOCK)
+    if (book.copies <= 0) {
+      throw createHttpError(
+        HttpStatus.FORBIDDEN,
+        HttpResponse.BOOK_COPY_OUTOFSTOCK
+      );
     }
-    await this.borrowRepository.create({ user: userid, book: book._id as Types.ObjectId });
+    await this.borrowRepository.create({
+      user: userid,
+      book: book._id as Types.ObjectId,
+    });
     return;
   }
 
@@ -37,7 +46,7 @@ class borrowServices {
         HttpResponse.BORROW_NOT_FOUND
       );
     }
-    if (book.status=='returned') {
+    if (book.status == "returned") {
       throw createHttpError(
         HttpStatus.CONFLICT,
         HttpResponse.BOOK_ALDREDY_RETURNED
@@ -46,13 +55,13 @@ class borrowServices {
     book.returnedAt = new Date(Date.now());
     book.status = "returned";
     await book.save();
-    return
+    return;
   }
   async getMyBorrowedBooks(
     userId: string,
     page: number = 1,
     limit: number = 10
-  ): Promise<borrowDto[]> {
+  ): Promise<{ data: borrowDto[]; total: number }> {
     const borrowedRecords =
       await this.borrowRepository.find<IBorrowRecordPopulated>(
         { user: userId },
@@ -61,11 +70,11 @@ class borrowServices {
         ["user", "book"]
       );
 
-    const results = borrowedRecords.map(
+    const results = borrowedRecords.data.map(
       (record) => new borrowDto(record as IBorrowRecordPopulated)
     );
 
-    return results;
+    return { data: results, total: borrowedRecords.total };
   }
   async Mostactiveusers(): Promise<ImostActiveUser[]> {
     return await this.borrowRepository.mostActiveuser();

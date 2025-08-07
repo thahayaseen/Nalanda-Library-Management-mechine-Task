@@ -1,5 +1,5 @@
 import { HttpResponse, HttpStatus } from "@/constants";
-import { IAuthServices } from "@/services/interface/Iauth.services";
+import { IAuthServices } from "@/services/interface/Iauth.service";
 import { createHttpError, HttpError } from "@/utils/httpError.utill";
 import { NextFunction, Request, Response } from "express";
 
