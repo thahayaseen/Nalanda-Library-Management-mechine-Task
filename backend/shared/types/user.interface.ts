@@ -6,3 +6,8 @@ export interface IUser {
   password: string;
   isVerified:boolean
 }
+export interface ImostActiveUser{
+  name:string;
+  email:string;
+  totalBorrows:number
+}

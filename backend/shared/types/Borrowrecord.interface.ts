@@ -20,3 +20,9 @@ export interface IBorrowRecordPopulated {
   returnedAt?: Date;
   status: "borrowed" | "returned";
 }
+
+export interface ImostBorrowedBookd{
+  title:string;
+  auther:string;
+  borrowdCount:number
+}
