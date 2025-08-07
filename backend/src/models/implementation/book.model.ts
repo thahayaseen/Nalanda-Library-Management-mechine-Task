@@ -1,6 +1,6 @@
 import { IBook } from 'shared/types/Book.interface';
 import { Document, model, Schema } from "mongoose";
-interface IbookDocument extends IBook,Document{}
+export interface IbookDocument extends IBook,Document{}
 const bookSchema = new Schema<IbookDocument>({
   title: { type: String, required: true },
   author: { type: String, required: true },
@@ -11,4 +11,4 @@ const bookSchema = new Schema<IbookDocument>({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Book = model('Book', bookSchema);
+export const BookModel = model('Book', bookSchema);
