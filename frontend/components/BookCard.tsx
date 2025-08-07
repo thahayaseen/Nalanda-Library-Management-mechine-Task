@@ -16,7 +16,7 @@ export default function BookCard({ book }: BookCardProps) {
         <CardHeader className="p-4">
           <div className="aspect-[3/4] relative mb-4">
             <Image
-              src={`/placeholder.svg?height=300&width=225&text=${encodeURIComponent(book.title)}`}
+              src={process.env.NEXT_PUBLIC_API_URL+'/'+book.image }
               alt={book.title}
               fill
               className="object-cover rounded-md"

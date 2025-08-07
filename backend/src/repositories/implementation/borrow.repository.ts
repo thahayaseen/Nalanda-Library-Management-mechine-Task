@@ -57,6 +57,9 @@ export class borrowRepository
           title: "$bookDetails.title",
           author: "$bookDetails.author",
           borrowCount: "$count",
+          _id:0,
+          ISBN:'$bookDetails.ISBN',
+          image:'$bookDetails.image'
         },
       },
     ]);

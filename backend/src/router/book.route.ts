@@ -14,6 +14,7 @@ router.post(
 router.put(
   "/update/:ISBN",
   JWTvalidateTocken("admin"),
+  uploads.single("image"),
 
   BookController.updateBook.bind(BookController)
 );

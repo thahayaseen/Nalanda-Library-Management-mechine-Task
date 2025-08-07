@@ -17,9 +17,10 @@ export class bookServices implements IbookService {
   }
   async updateBook(
     ISBN: string,
-    update: Partial<IBook>
+    update: Partial<IBook>={}
   ): Promise<IbookDocument> {
     const updateData: Partial<IBook> = {};
+console.log(update);
 
     const allowedFields: (keyof IBook)[] = [
       "title",
@@ -29,6 +30,7 @@ export class bookServices implements IbookService {
       "genre",
       "copies",
       "listed",
+      "image"
     ];
 
     for (const key of allowedFields) {
@@ -36,11 +38,13 @@ export class bookServices implements IbookService {
         updateData[key] = update[key] as any;
       }
     }
+console.log(updateData,'dathhyh');
 
     const updatedBook = await this.BookRepository.findOneAndUpdate(
       { ISBN },
       { $set: updateData }
     );
+console.log(updatedBook,'after');
 
     return updatedBook;
   }
@@ -77,7 +81,7 @@ export class bookServices implements IbookService {
     );
     console.log(books,'the books');
     
-    const data = books.data.map((data) => new bookDto(data));
+    const data = books.data.map((data) => new bookDto(data,isAdmin));
     return { data, totalpage: books.pages };
   }
 

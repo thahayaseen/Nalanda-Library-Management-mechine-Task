@@ -8,7 +8,9 @@ export class bookDto {
   private genre: string;
   private copies: number;
   private image: string;
-  constructor(book: IBook) {
+  private listed: boolean;
+  
+  constructor(book: IBook, isAdmin=false) {
     this.title = book.title;
     this.author = book.author;
     this.ISBN = book.ISBN;
@@ -16,5 +18,8 @@ export class bookDto {
     this.genre = book.genre;
     this.copies = book.copies;
     this.image=book.image
+    if(isAdmin){
+      this.listed=book.listed
+    }
   }
 }

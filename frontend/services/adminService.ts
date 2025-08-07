@@ -23,11 +23,17 @@ export const adminService = {
   },
 
   async updateBook(id: string, formData: FormData) {
+    console.log(formData,'dafda');
+    
     const response = await api.put(`/books/update/${id}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     })
+    return response.data
+  },
+  async unList(id:string,status:boolean){
+  const response = await api.put(`/books/update/${id}`, {listed:status})
     return response.data
   },
 

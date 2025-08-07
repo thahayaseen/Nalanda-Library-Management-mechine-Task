@@ -9,14 +9,10 @@ import { BookOpen, Plus, Users, BarChart3, Settings, LogOut, Menu, X } from 'luc
 import { cn } from '@/lib/utils'
 
 const sidebarItems = [
-  {
-    title: 'Dashboard',
-    href: '/admin',
-    icon: BarChart3
-  },
+
   {
     title: 'All Books',
-    href: '/admin/books',
+    href: '/admin',
     icon: BookOpen
   },
   {
@@ -24,16 +20,16 @@ const sidebarItems = [
     href: '/admin/books/create',
     icon: Plus
   },
-  {
-    title: 'Users',
-    href: '/admin/users',
-    icon: Users
-  },
-  {
-    title: 'Settings',
-    href: '/admin/settings',
-    icon: Settings
-  }
+  // {
+  //   title: 'Users',
+  //   href: '/admin/users',
+  //   icon: Users
+  // },
+  // {
+  //   title: 'Settings',
+  //   href: '/admin/settings',
+  //   icon: Settings
+  // }
 ]
 
 export default function AdminSidebar() {
