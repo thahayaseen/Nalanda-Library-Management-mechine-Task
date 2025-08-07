@@ -38,7 +38,7 @@ export const adminService = {
   },
 
   async deleteBook(id: string) {
-    const response = await api.delete(`/admin/books/${id}`)
+    const response = await api.delete(`/books/${id}`)
     return response.data
   },
 

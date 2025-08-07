@@ -24,4 +24,5 @@ export interface IbookService {
       id: string;
     };
   }>;
+  delteBook(ISBN: string): Promise<void> 
 }

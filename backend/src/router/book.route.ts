@@ -18,6 +18,13 @@ router.put(
 
   BookController.updateBook.bind(BookController)
 );
+router.delete(
+  "/:ISBN",
+  JWTvalidateTocken("admin"),
+ 
+
+  BookController.deleteBook.bind(BookController)
+);
 router.get(
   "/",
   JWTvalidateTocken(),

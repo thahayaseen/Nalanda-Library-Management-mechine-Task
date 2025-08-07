@@ -2,6 +2,7 @@ import { HttpResponse, HttpStatus } from "@/constants";
 import { bookDto } from "@/dto/book.dto";
 import { IBorrowServices } from "@/services/interface/borrow.service";
 import { IbookService } from "@/services/interface/Ibook.service";
+import { createHttpError } from "@/utils/httpError.utill";
 import { UserRequest } from "@/utils/httpInterface.utill";
 import { NextFunction, Request, Response } from "express";
 import { Types } from "mongoose";
@@ -21,6 +22,25 @@ export class bookController {
       res
         .status(HttpStatus.CREATED)
         .json({ message: HttpResponse.BOOK_CREATION_SUCCESS, data: book });
+      return;
+    } catch (error) {
+      next(error);
+    }
+  }
+  async deleteBook(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = req.params.ISBN;
+
+      if (!data) {
+        throw createHttpError(
+          HttpStatus.FORBIDDEN,
+          HttpResponse.INVALID_CREDENTIALS
+        );
+      }
+      const book = await this.bookService.delteBook(data);
+      res
+        .status(HttpStatus.OK)
+        .json({ message: HttpResponse.BOOK_REMOVED});
       return;
     } catch (error) {
       next(error);

@@ -9,18 +9,21 @@ import { HttpResponse, HttpStatus } from "@/constants";
 import { IborrowRepository } from "@/repositories/interface/Iborrow.repository";
 
 export class bookServices implements IbookService {
-  constructor(private BookRepository: IbookRepository,private BorrowRepository:IborrowRepository) {}
+  constructor(
+    private BookRepository: IbookRepository,
+    private BorrowRepository: IborrowRepository
+  ) {}
   async createBook(book: IBook): Promise<IbookDocument> {
-    console.log(book,'data');
-    
+    console.log(book, "data");
+
     return await this.BookRepository.create(book);
   }
   async updateBook(
     ISBN: string,
-    update: Partial<IBook>={}
+    update: Partial<IBook> = {}
   ): Promise<IbookDocument> {
     const updateData: Partial<IBook> = {};
-console.log(update);
+    console.log(update);
 
     const allowedFields: (keyof IBook)[] = [
       "title",
@@ -30,7 +33,7 @@ console.log(update);
       "genre",
       "copies",
       "listed",
-      "image"
+      "image",
     ];
 
     for (const key of allowedFields) {
@@ -38,13 +41,13 @@ console.log(update);
         updateData[key] = update[key] as any;
       }
     }
-console.log(updateData,'dathhyh');
+    console.log(updateData, "dathhyh");
 
     const updatedBook = await this.BookRepository.findOneAndUpdate(
       { ISBN },
       { $set: updateData }
     );
-console.log(updatedBook,'after');
+    console.log(updatedBook, "after");
 
     return updatedBook;
   }
@@ -57,7 +60,7 @@ console.log(updatedBook,'after');
     sortOrder: string = "desc",
     filters: Partial<{ genre: string; author: string }> = {}
   ): Promise<{ data: bookDto[]; totalpage: number }> {
-    const query: any = { };
+    const query: any = {};
     if (!isAdmin) {
       query.listed = true;
     }
@@ -68,7 +71,6 @@ console.log(updatedBook,'after');
       ];
     }
     console.log(query);
-    
 
     const sortOption = sortOrder === "asc" ? true : false;
 
@@ -79,29 +81,48 @@ console.log(updatedBook,'after');
       [],
       sortOption
     );
-    console.log(books,'the books');
-    
-    const data = books.data.map((data) => new bookDto(data,isAdmin));
+    console.log(books, "the books");
+
+    const data = books.data.map((data) => new bookDto(data, isAdmin));
     return { data, totalpage: books.pages };
   }
 
-  async getSelectedBook(ISBN: string,userid:string): Promise<{data:bookDto,aldredy:{
-    ispurchased:boolean,
-    id:string
-  }}> {
-    console.log(ISBN,'simn');
-    
+  async getSelectedBook(
+    ISBN: string,
+    userid: string
+  ): Promise<{
+    data: bookDto;
+    aldredy: {
+      ispurchased: boolean;
+      id: string;
+    };
+  }> {
+    console.log(ISBN, "simn");
+
     const books = (await this.BookRepository.findOne({
       ISBN,
       listed: true,
     })) as IBook;
-    console.log(ISBN,userid,books,'datsfasda');
-    
-    const aldredu=await this.BorrowRepository.findOne({book:books._id,user:userid})
+    console.log(ISBN, userid, books, "datsfasda");
+
+    const aldredu = await this.BorrowRepository.findOne({
+      book: books._id,
+      user: userid,
+    });
     console.log(aldredu);
-    if(!books){
-      throw createHttpError(HttpStatus.NOT_FOUND,HttpResponse.BOOK_NOT_FOUND)
+    if (!books) {
+      throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.BOOK_NOT_FOUND);
     }
-    return{data:new bookDto(books),aldredy:{ispurchased:aldredu?true:false,id:aldredu?._id as string}};
+    return {
+      data: new bookDto(books),
+      aldredy: {
+        ispurchased: aldredu ? true : false,
+        id: aldredu?._id as string,
+      },
+    };
+  }
+  async delteBook(ISBN: string): Promise<void> {
+    await this.BookRepository.findOneAndDelete({ ISBN });
+    return;
   }
 }
