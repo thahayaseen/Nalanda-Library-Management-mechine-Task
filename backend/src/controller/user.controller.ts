@@ -68,7 +68,7 @@ export class userController {
       
       const record = await this.borrowService.getMyBorrowedBooks(
         (req as UserRequest).user.id,
-        Number(page),
+        Number(page||1),
         Number(limit||5)
       );
       res.status(HttpStatus.OK).json({

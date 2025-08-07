@@ -91,7 +91,7 @@ export class bookServices implements IbookService {
       ISBN,
       listed: true,
     })) as IBook;
-    console.log(ISBN,userid,'datsfasda');
+    console.log(ISBN,userid,books,'datsfasda');
     
     const aldredu=await this.BorrowRepository.findOne({book:books._id,user:userid})
     console.log(aldredu);

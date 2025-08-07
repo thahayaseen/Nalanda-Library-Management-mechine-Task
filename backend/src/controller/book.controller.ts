@@ -77,10 +77,16 @@ export class bookController {
     return;
   }
   async monstBorrowdBook(req: Request, res: Response, next: NextFunction) {
-    const data = await this.borrowService.monstBorrowdBook();
+   try {
+    console.log('heree');
+    
+     const data = await this.borrowService.monstBorrowdBook();
     res
       .status(HttpStatus.OK)
       .json({ success: true, message: "successfully fetch the data", data });
     return;
+   } catch (error) {
+    next(error)
+   }
   }
 }

@@ -11,6 +11,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
   const getPageNumbers = () => {
     const pages = []
     const maxVisiblePages = 5
+    console.log(currentPage === totalPages,'dfadfa',currentPage,totalPages);
     
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
@@ -53,7 +54,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
+        disabled={currentPage >= totalPages}
       >
         Next
         <ChevronRight className="h-4 w-4" />

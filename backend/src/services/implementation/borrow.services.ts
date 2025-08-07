@@ -83,9 +83,11 @@ export class borrowServices implements IBorrowServices {
         limit,
         ["user", "book"]
       );
+      console.log(borrowedRecords,'datass');
     if (borrowedRecords.data.length == 0) {
       throw createHttpError(HttpStatus.NOT_FOUND, HttpResponse.BOOK_NOT_FOUND);
     }
+    
     const results = borrowedRecords.data.map(
       (record) => new borrowDto(record as IBorrowRecordPopulated)
     );

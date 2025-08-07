@@ -26,12 +26,13 @@ export default function ProfilePage() {
   const { toast } = useToast()
   const [borrowedBooks, setBorrowedBooks] = useState<BorrowedBook[]>([])
   const [loading, setLoading] = useState(true)
-const [page,setPage]=useState(1)
+const [page,setPage]=useState(0)
   useEffect(() => {
     const fetchBorrowedBooks = async () => {
       try {
         const books = await borrowService.getUserBorrowedBooks(page)
         console.log(books,'data');
+        console.log(total,'ttl');
         
         // Handle the data structure - it might be books.data or just books
         const booksData = books.data || books
@@ -39,6 +40,8 @@ const [page,setPage]=useState(1)
         setBorrowedBooks(booksData)
       } catch (error) {
         console.error('Error fetching borrowed books:', error)
+        setTotal(0)
+        setPage(1)
       } finally {
         setLoading(false)
       }
