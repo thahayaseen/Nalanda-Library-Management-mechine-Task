@@ -12,7 +12,7 @@ import {
 import { ImostActiveUser } from "shared/types/user.interface";
 import { IBorrowServices } from "../interface/borrow.service";
 
-class borrowServices implements IBorrowServices {
+export class borrowServices implements IBorrowServices {
   constructor(
     private borrowRepository: IborrowRepository,
     private bookRepository: IbookRepository

@@ -61,11 +61,5 @@ class bookController {
     res.status(HttpStatus.OK).json({ success: true, data });
     return;
   }
-  async buyAbook(req: Request, res: Response, next: NextFunction) {
-    try {
-      const userid = (req as UserRequest).user.id;
-      const ISBN = req.body;
-      this.borrowService.borrowAbook(new Types.ObjectId(userid), ISBN);
-    } catch (error) {}
-  }
+  
 }
