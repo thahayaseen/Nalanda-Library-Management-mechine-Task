@@ -5,7 +5,7 @@ import { HttpStatus } from "@/constants/status.constant";
 import { createHttpError } from "@/utils/httpError.utill";
 import { UserRequest } from "@/utils/httpInterface.utill";
 
-export default function (userLevel: "user" | "admin" | "moderator") {
+export default function (userLevel: "member" | "admin") {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
       const authHeader = req.headers.authorization;
@@ -24,9 +24,9 @@ export default function (userLevel: "user" | "admin" | "moderator") {
       const payload = verifyAccessToken(token) as {
         id: string;
         email: string;
-        role: "user" | "admin" | "moderator";
+        role: "member" | "admin";
       };
-      payload.role = "user";
+      payload.role = "member";
       if (!payload) {
         console.log("Invalid token payload");
         throw createHttpError(

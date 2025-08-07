@@ -1,8 +1,9 @@
-import { IUserModel } from "@/models/implementation/user.model";
+import { IUserDocument } from "@/models/implementation/user.model";
+import { BaseRepository } from "../basic.repository";
 
-export interface IUserRepository {
+export interface IUserRepository extends BaseRepository<IUserDocument>{
   updatePassword(
     userid: string,
     hashedPassword: string
-  ): Promise<IUserModel | null>;
+  ): Promise<IUserDocument | null>;
 }

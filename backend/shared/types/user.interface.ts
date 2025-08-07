@@ -1,7 +1,7 @@
 export interface IUser {
   _id?: string;
   username: string;
-  role: "admin" | "user";
+  role: "admin" | "member";
   email: string;
   password: string;
   isVerified:boolean

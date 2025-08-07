@@ -6,7 +6,6 @@ import {
   DeleteResult,
   Types,
   UpdateWriteOpResult,
-
 } from "mongoose";
 
 export abstract class BaseRepository<T extends Document> {
@@ -53,25 +52,24 @@ export abstract class BaseRepository<T extends Document> {
     return this.model.deleteOne(filter);
   }
 
-  async find(
+  async find<TPopulated = T>(
     filter: FilterQuery<T>,
     page: number = 1,
     limit: number = 5,
-    pop:boolean=true
-  ): Promise<T[]> {
-    const qury = this.model.find(filter);
-    if (page && limit) {
-      const skip = (page - 1) * limit;
-      qury.skip(skip);
-    }
-    if (limit) {
-      qury.limit(limit);
-    }
-    if(pop){
-      qury.populate('userid')
+    populate?: string[]
+  ): Promise<TPopulated[] | T[]> {
+    const query = this.model.find(filter);
+
+    const skip = (page - 1) * limit;
+    query.skip(skip).limit(limit);
+
+    if (populate?.length) {
+      for (const path of populate) {
+        query.populate(path);
+      }
     }
 
-    return qury;
+    return query.exec();
   }
 
   async findOne(filter: FilterQuery<T>): Promise<T | null> {

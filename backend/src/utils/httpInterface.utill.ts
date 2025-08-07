@@ -5,6 +5,6 @@ export interface UserRequest extends Request {
     id: string;
     // name: string;
     email: string;
-    role: "user" | "admin" | "moderator";
+    role: "member" | "admin" ;
   };
 }

@@ -5,5 +5,6 @@ export interface IBook{
     publicationDate:Date;
     genre:string;
     copies:number;
-    createdAt:Date;
+    createdAt?:Date;
+    listed:boolean
 }

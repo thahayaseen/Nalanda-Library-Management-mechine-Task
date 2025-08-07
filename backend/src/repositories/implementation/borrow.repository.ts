@@ -7,7 +7,7 @@ import { IborrowRepository } from "../interface/Iborrow.repository";
 import { ImostActiveUser } from "shared/types/user.interface";
 import { ImostBorrowedBookd } from "shared/types/Borrowrecord.interface";
 
-class borrowRepository
+export class borrowRepository
   extends BaseRepository<IBorrowdDocument>
   implements IborrowRepository
 {

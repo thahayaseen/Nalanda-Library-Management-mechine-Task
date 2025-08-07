@@ -1,15 +1,15 @@
 import mongoose, { Document, Schema, Types } from "mongoose";
 import { IUser } from "shared/types";
 
-export interface IUserModel extends Document, Omit<IUser, "_id"> {}
+export interface IUserDocument extends Document, Omit<IUser, "_id"> {}
 
-const userSchema = new Schema<IUserModel>({
+const userSchema = new Schema<IUserDocument>({
   _id: Types.ObjectId,
   username: { type: String, required: true },
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ["admin", "member"],
+    default: "member",
   },
   email: {
     type: String,
@@ -25,4 +25,4 @@ const userSchema = new Schema<IUserModel>({
   },
 });
 
-export const userModel = mongoose.model<IUserModel>("User", userSchema);
+export const userModel = mongoose.model<IUserDocument>("User", userSchema);
